@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>My Wishlist</h2>
+    <div class="input-group mb-3">
+        <input type="text" id="newItem" class="form-control" placeholder="Add a new item">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="addItemButton">Add</button>
+        </div>
+    </div>
+    <ul id="wishlist" class="list-group">
+    </ul>
+</div>
+
+<script>
+    document.getElementById('addItemButton').onclick = function() {
+        const newItem = document.getElementById('newItem').value;
+        if (newItem.trim() !== '') {
+            const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+            wishlist.push(newItem);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            displayWishlist();
+            document.getElementById('newItem').value = ''; // Clear input field
+        }
+    };
+
+    function displayWishlist() {
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        const wishlistElement = document.getElementById('wishlist');
+        wishlistElement.innerHTML = ''; // Clear existing wishlist items
+
+        wishlist.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.textContent = item;
+
+            const removeButton = document.createElement('button');
+            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'float-right');
+            removeButton.textContent = 'Remove';
+            removeButton.onclick = function() {
+                removeItem(index);
+            };
+
+            li.appendChild(removeButton);
+            wishlistElement.appendChild(li);
+        });
+    }
+
+    function removeItem(index) {
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        wishlist.splice(index, 1);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        displayWishlist();
+    }
+
+    // Display wishlist items on initial page load
+    displayWishlist();
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
